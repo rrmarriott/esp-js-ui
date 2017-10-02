@@ -86,39 +86,51 @@ export declare enum Level {
     warn = 3,
     error = 4,
 }
+export declare type MarkerLabels = {[key: string]: string};
 export declare type LogEvent = {
     logger: string;
     level: Level;
     color: string;
     args: IArguments;
+    labels: MarkerLabels;
 };
+export interface Sink {
+    log(logEvent: LogEvent): void;
+}
+export class ConsoleSink implements Sink {
+    log(logEvent: LogEvent): void;
+}
+export class CompositeSink implements Sink {
+    constructor(sinks: Array<Sink>);
+    log(logEvent: LogEvent): void;
+}
 export class Logger {
     private _name;
     constructor(name: string);
     static create(name: string): Logger;
     static setLevel(level: Level): void;
-    static setSink(sink: (logEvent: LogEvent) => {}): void;
+    static setSink(sink: Sink): void;
     /**
-     * verbose(message [, ...args]): expects a string log message and optional object to dump to console
+     * verbose(message [, ...args[, labels]]): expects a string log message, args for console logging, and optional marker labels
      */
-    verbose(message: string, objectToDumpToConsole?: any): void;
+    verbose(message: string, args?: any, labels?: MarkerLabels): void;
     /**
-     * debug(message [, ...args]): expects a string log message and optional object to dump to console
+     * debug(message [, ...args[, labels]]): expects a string log message, args for console logging, and optional marker labels
      */
-    debug(message: string, objectToDumpToConsole?: any): void;
+    debug(message: string, args?: any, labels?: MarkerLabels): void;
     /**
-     * info(message [, ...args]): expects a string log message and optional object to dump to console
+     * info(message [, ...args[, labels]]): expects a string log message, args for console logging, and optional marker labels
      */
-    info(message: string, objectToDumpToConsole?: any): void;
+    info(message: string, args?: any, labels?: MarkerLabels): void;
     /**
-     * warn(message [, ...args]): expects a string log message and optional object to dump to console
+     * warn(message [, ...args[, labels]]): expects a string log message, args for console logging, and optional marker labels
      */
-    warn(message: string, objectToDumpToConsole?: any): void;
+    warn(message: string, args?: any, labels?: MarkerLabels): void;
     /**
-     * error(message [, ...args]): expects a string log message and optional object to dump to console
+     * error(message [, ...args[, labels]]): expects a string log message, args for console logging, and optional marker labels
      */
-    error(message: string, objectToDumpToConsole?: any): void;
-    private _log(level, color, args);
+    error(message: string, args?: any, labels?: MarkerLabels): void;
+    private _log(level, color, args, labels?: MarkerLabels): void;
 }
 
 export interface ISchedulerService {
